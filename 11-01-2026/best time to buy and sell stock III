@@ -1,0 +1,27 @@
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        
+        HOLD_STOCK, KEEP_CASH = 0, 1
+        
+        
+        dp = defaultdict(int)        
+        
+        
+        dp[(HOLD_STOCK, 0)] = -math.inf
+        dp[(HOLD_STOCK, 1)] = -math.inf
+        dp[(HOLD_STOCK, 2)] = -math.inf
+        
+
+        for stock_price in prices:
+            dp[KEEP_CASH, 1] = max(dp[KEEP_CASH, 1], dp[HOLD_STOCK, 1] + stock_price )
+            
+           
+            dp[HOLD_STOCK, 1] = max(dp[HOLD_STOCK, 1],  dp[KEEP_CASH, 0] - stock_price)
+            
+            
+            dp[KEEP_CASH, 2] = max(dp[KEEP_CASH, 2], dp[ HOLD_STOCK, 2] + stock_price)
+
+           
+            dp[HOLD_STOCK, 2] = max(dp[HOLD_STOCK, 2], dp[KEEP_CASH, 1] - stock_price)
+            
+        return dp[KEEP_CASH, 2]
