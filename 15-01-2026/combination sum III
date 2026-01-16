@@ -1,0 +1,41 @@
+class Solution {
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(1, k, n, new ArrayList<>(), result);
+        return result;
+    }
+
+    /**
+     * @param start   The number to start checking from (1-9)
+     * @param count   How many more numbers we need to pick (k)
+     * @param target  The remaining sum we need to achieve (n)
+     */
+    private void backtrack(int start, int count, int target, List<Integer> tempList, List<List<Integer>> result) {
+        
+        // Base Case: Success
+        // We used exactly k numbers AND the remaining target is 0
+        if (count == 0 && target == 0) {
+            result.add(new ArrayList<>(tempList));
+            return;
+        }
+
+        // Loop through numbers 1 to 9
+        for (int i = start; i <= 9; i++) {
+            
+            // OPTIMIZATION (Pruning):
+            // 1. If we have no slots left (count <= 0), stop.
+            // 2. If the current number 'i' is already larger than the remaining target, stop.
+            //    (Because i+1, i+2... will also be too large).
+            if (count <= 0 || i > target) break;
+
+            // CHOICE: Add i
+            tempList.add(i);
+            
+            // RECURSE: Move to next number (i + 1), decrement count, reduce target
+            backtrack(i + 1, count - 1, target - i, tempList, result);
+            
+            // BACKTRACK: Remove i to explore other options
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+}
