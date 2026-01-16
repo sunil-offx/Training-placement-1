@@ -1,0 +1,40 @@
+class Solution {
+    
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        // Using Kahn's Algorithm (BFS Topological Sort)
+        List<Integer>[] g = new ArrayList[numCourses];
+        for (int i = 0; i < numCourses; i++)
+            g[i] = new ArrayList<>();
+        
+        int[] indeg = new int[numCourses];
+        
+        // Build graph: edge from prerequisite to course
+        for (int[] e : prerequisites) {
+            g[e[1]].add(e[0]);  // e[1] must be taken before e[0]
+            indeg[e[0]]++;       // e[0] has one more prerequisite
+        }
+
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+
+        // Start with courses that have no prerequisites
+        for (int i = 0; i < numCourses; i++)
+            if (indeg[i] == 0)
+                q.add(i);
+
+        int count = 0;  // Number of courses we can complete
+
+        while (!q.isEmpty()) {
+            int curr = q.poll();
+            count++;  // "Complete" this course
+            
+            // For each course that depends on curr
+            for (int next : g[curr]) {
+                if (--indeg[next] == 0)  // One less prerequisite
+                    q.add(next);  // Can now take this course
+            }
+        }
+
+        // If we completed all courses, no cycle exists
+        return count == numCourses;
+    }
+}
